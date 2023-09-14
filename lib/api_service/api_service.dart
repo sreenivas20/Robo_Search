@@ -11,12 +11,10 @@ import 'package:robot_api_search/model/get_bot_model.dart';
 
 class ApiService extends GetxController implements GetxService {
   @override
-  void onInit() async {
+  void onInit() {
     super.onInit();
-    bool isInternetConnected = await checkInternetConnectivity();
-    if (isInternetConnected) {
-      loadData();
-    }
+
+    loadData();
   }
 
   TextEditingController searchController = TextEditingController();
@@ -72,7 +70,35 @@ class ApiService extends GetxController implements GetxService {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
-      
+      Get.dialog(AlertDialog(
+        title: const Text('No Internet Connection'),
+        content: const Text("Please connect to internet and press 'OK'"),
+        actions: [
+          Row(
+            children: [
+              TextButton(
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onPressed: () {
+                  Get.back();
+                },
+              ),
+              TextButton(
+                child: const Text(
+                  'OK',
+                  style: TextStyle(color: Colors.green),
+                ),
+                onPressed: () {
+                  loadData();
+                  Get.back();
+                },
+              ),
+            ],
+          )
+        ],
+      ));
       return;
     }
 
@@ -104,7 +130,7 @@ class ApiService extends GetxController implements GetxService {
                   style: TextStyle(color: Colors.red),
                 ),
                 onPressed: () {
-                  loadData();
+                  Get.back();
                 },
               ),
               TextButton(
@@ -112,7 +138,8 @@ class ApiService extends GetxController implements GetxService {
                   'OK',
                   style: TextStyle(color: Colors.green),
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  loadData();
                   Get.back();
                 },
               ),
@@ -127,8 +154,6 @@ class ApiService extends GetxController implements GetxService {
     filteredBotList = filteredList;
     update();
   }
-
- 
 
   Future<bool> checkInternetConnectivity() async {
     try {
