@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:robot_api_search/api_service/api_service.dart';
@@ -22,13 +23,23 @@ class BotListWidget extends StatelessWidget {
       decoration: BoxDecoration(border: Border.all(width: 2)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FutureBuilder(
               future: ApiService().getImage(data.id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                    width: 160.w,
+                    height: 150.h,
+                    child: const Center(
+                      child: CupertinoActivityIndicator(radius: 20),
+                    ),
+                  );
+                }
+                if (snapshot.connectionState == ConnectionState.none) {
                   return const Center(
-                    child: CircularProgressIndicator(),
+                    child: Text('Check Your Internet Connection'),
                   );
                 }
                 if (!snapshot.hasData) {
@@ -36,6 +47,10 @@ class BotListWidget extends StatelessWidget {
                     child: Text('No data available'),
                   );
                 }
+                if (snapshot.hasError) {
+                  return Text('Check Your Internet Connection');
+                }
+               
                 return Container(
                   margin: const EdgeInsets.only(
                     left: 6,

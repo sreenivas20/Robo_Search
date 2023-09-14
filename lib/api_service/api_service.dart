@@ -19,9 +19,8 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final List<dynamic> decodedData = jsonDecode(response.body);
-        extractedData = decodedData
-            .map((json) => BotModel.fromJson(json))
-            .toList(); 
+        extractedData =
+            decodedData.map((json) => BotModel.fromJson(json)).toList();
         log(extractedData[0].name.toString());
         return extractedData;
       }
@@ -33,7 +32,6 @@ class ApiService {
   }
 
   Future<Uint8List> getImage(index) async {
-
     final url = ApiUrls.botListImage + index.toString();
     try {
       final response = await http.get(Uri.parse(url));
@@ -43,9 +41,9 @@ class ApiService {
       }
       return image!;
     } catch (e) {
+      
       log(e.toString());
     }
     return image!;
   }
-  
 }

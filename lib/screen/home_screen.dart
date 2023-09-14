@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,6 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+  
+
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -74,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               if (filteredBotList.isEmpty && searchController.text.isNotEmpty)
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.symmetric(vertical: 176.0.h),
                   child: Center(
                     child: Text(
                       'Search not found for "${searchController.text}"',
@@ -88,8 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 5,
-                  childAspectRatio: 0.8,
-                  
+                  childAspectRatio: 0.7,
                 ),
                 itemCount: filteredBotList.length,
                 itemBuilder: (context, index) {
@@ -108,6 +111,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
             selectedItemColor: Colors.white,
             unselectedItemColor: Colors.black.withOpacity(0.5),
             currentIndex: 2,
@@ -164,10 +169,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _loadData() async {
     final data = await ApiService().getPublic();
+    bool isInternetConnected = await _checkInternetConnectivity();
+    if (!isInternetConnected) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('No Internet Connection'),
+            content: Text('Please connect to the internet and click ok'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  _loadData();
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
     setState(() {
       allBotList = data;
       filteredBotList = data;
     });
+  }
+
+  Future<bool> _checkInternetConnectivity() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } on SocketException catch (_) {
+      return false;
+    }
+    return false;
   }
 
   void _filterBotList(String query) {
