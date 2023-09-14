@@ -1,0 +1,9 @@
+1. Created an app for displaying robot data from a RESTful API.
+2. Implemented a search screen that allows users to search for robots by name.
+3. Integrated GET API calls to retrieve robot data based on user input.
+4. Designed the search screen with a Text input field for user queries.
+5. Utilized a filter function to match user input with robot names and display filtered results using GridView.builder.
+6. Designed a custom widget to display robot details as per the documentation.
+7.Customized the BottomNavigationBar to fit the app's design and functionality.
+8.Handled the challenge of API responses delivering images in PNG format.
+9.Converted PNG data into Uint8List and used the MemoryImage widget to display images in the app.
